@@ -1,0 +1,40 @@
+\section{A Lower Bound}
+
+To prove the lower bound, $f(n) \geq \frac{17n}{16}$, we will only have to find a permutation, $\tau$, that can't be sorted in less than $\frac{17n}{16}$ steps. Let $\tau=17536428$. For a positive integer $k$, $\tau_k$ denotes $\tau$ with each of the integers increased by $8.(k-1)$. In other words, $\tau_k$ is the sequence $1_k7_k5_k3_k6_k4_k2_k8_k$, where $m_k = m+(k-1).8$. For example, $\tau_2 = $9 15 13 11 14 12 10 16. Consider the permutation $\chi=\tau_1\tau_2^R\tau_3\tau_4^R\ldots\tau_{m-1}\tau_m^R$, where m is an even integer, and $n = |\chi| = 8.m$.\\
+
+\textbf{Claim} $\frac{17n}{16} \leq f(\chi) \leq \frac{19n}{16}$.\\
+\textbf{Proof} We will first prove the upper bound. In order to show that $f(\chi) \leq \frac{19n}{16}$, we need to find a sequence of reversals that transforms $\chi$ into the identity permutation in at most $\frac{19n}{16}$ flips. We first do the following sequence of moves:
+\[
+\chi \longrightarrow{} \tau_2\tau_1^R\tau_3\tau_4^R\ldots\tau_{m-1}\tau_m^R  \longrightarrow{} \tau_2^R\tau_1^R\tau_3\tau_4^R\ldots\tau_{m-1}\tau_m^R \longrightarrow{} \tau_1\tau_2\tau_3\tau_4^R\ldots\tau_{m-1}\tau_m^R
+\]
+Following the same procedure, we can convert $\chi$ to $\chi\prime=\tau_1\tau_1\tau_3\tau_4\ldots\tau_{m-1}\tau_m$ in $\frac{3m}{2}=\frac{3n}{16}$ reversals. After that for each $\tau_i$ in $\chi\prime$ we perform the following reversals, for simplicity we removed the subscript $k$.  
+
+\[
+\chi\prime=x17536428y \longrightarrow{} 571x^{R}36428y \longrightarrow 63x175428y \longrightarrow 1x^{R}3675428y \longrightarrow 45763x128y 
+\]
+\[
+\longrightarrow 67543x128y \longrightarrow 76543x128y \longrightarrow 21x^{R}345678y \longrightarrow x1234567y 
+\]
+Hence, each $\tau_i$ is sorted in 8 reversals, and permutation $\chi$ is sorted in $8.m + \frac{3n}{16} = \frac{19n}{16}$ reversals.
+
+To prove the lower bound $\chi=\chi_0\longrightarrow\chi_1\longrightarrow\chi_2\longrightarrow\ldots\longrightarrow\chi_{f(\chi)}=e$ be an optimal sequence of reversals for $\chi$. Each of $\chi_j$, $j = 1, \ldots, f(\chi)$ is called a \textbf{move}. Let us call a move \textbf{k-stable}, if it contains a substring of the form  $1_k7_k\sigma2_k8_k$ (or its reverse), where $\sigma$ can be any permutation of the string 3456. A move $\chi_j$ is called an \textbf{event}, if $\chi_j$ is k-stable, for some $k$, but $\chi_{j+1}, \chi_{j+2}, \ldots, \chi_{f(\chi)}$ are not. \\[0.1in]
+
+\textbf{Claim} There are exactly $m$ events \\
+\textbf{Proof} $\chi_0$ is k-stable for every $k$, $1 \leq k \leq m$. Moreover, the identity permutation is not k-stable. The claim follows immediately from the fact that no permutation can cease to be $k_{1}$-stable and $k_{2}$-stable, where $k_1 \neq k_2$, in only one reversal operation. \\
+
+Let us call $\chi_j$ a waste if it has no more adjacencies than $\chi_{j-1}$. Let $w$ denote the total number of wastes among $\chi_j, \chi_{j+1}, \ldots ,\chi_{f(\chi)}$. \\
+
+\textbf{Claim} $f(\chi) \geq n + w$\\ 
+\textbf{Proof} $\chi$ has no adjacencies, and after applying the reversal operations we end up with $n - 1$ adjacencies. Since any move that is not a waste creates one adjacency, it must be that $f(\chi) \geq n + w$.  \\
+
+\textbf{Claim} For all $j$, $1 \leq j \leq m - 1$, there exists a waste $\chi_l$ with $i_j \leq l \leq i_{j+1}$.\\ 
+\textbf{Proof} Since by previous claims there are exactly $m$ events, we can rewrite the optimal sequence in the following way, where each $\chi_{i_j}$ corresponds to an event 
+\[
+\chi_{i_1} \rightsquigarrow \chi_{i_2} \rightsquigarrow \ldots \rightsquigarrow \chi_{i_m}
+\]
+Suppose that the claim is not correct. That is for some $j$, all the moves $\chi_{j}, i_{j} \leq j \leq i_{j-1}$, construct a new adjacency without destroying the existing ones. Choose $k$ such that $\chi_{i_j-1}$ is the last k-sortable permutation in the sequence. Then $\chi_{i_j-1}=x1_k7_k\sigma2_k8_ky$. WLOG, assume that $\tau=x17536428y$, again we have omitted subscript $k$ for the sake of simplicity. We distinguish among two cases. If $x = \epsilon$, the next move must be $\chi_{i_j}=46357128y$. This is due to the fact that any other move would have been a waste or preserved k-sortability. Now, according to our hypothesis, no move is a waste until after the next event. However, if any flip with more than 4 elements is a waste. If $x \neq \epsilon$, that is $\tau=x17536428y$, since $\chi_{i_j}$ is neither a waste nor k-sortable, it must be that $x = 9z$. Therefore, $\chi_{i_j}=2463571z^{R}98y$. Since $2$ is at the beginning of $\chi_{i_j}$, any reversal other than the local rearrangements of elements $\lbrace 1, 2, 3, 4, 5, 6, 7 \rbrace $ would be a waste. $\chi_{i_j}$ will eventually turn into $7654321z^{R}98y$, since we must increase adjacencies at every step according to our hypothesis. After that, any move will be a waste, which is a contradiction to our hypothesis. \\
+
+The lower bound now follows directly from the claims. 
+\[
+f(\chi) \geq n+w \geq n+\frac{m}{2}=\frac{17}{16}n
+\]

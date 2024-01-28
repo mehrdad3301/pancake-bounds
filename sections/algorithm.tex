@@ -1,0 +1,335 @@
+\section{An Algorithm}
+Let $ f(n) $ denote the maximum number of steps required to sort a permutation of size n. The table below shows the value for $ f $ for $ 1 \leq n \leq 9$. 
+\begin{center}
+\begin{tabular}{ |c c c c c c c c c c| } 
+ \hline
+ $n$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 \\
+ \hline
+ $f(n)$& 0 & 1 & 3 & 4 & 5 & 7 & 8 & 9 & 10 \\
+ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Definitions}
+As before, $\pi_{j}$ represents the $j$th position in permutation $\pi$. We call $\pi_j$ and $\pi_{j+1}$ an \textbf{adjacency} if $| \pi_j - \pi_{j+1} | = 1$. If $\pi = xby$, and $(\pi_j,\pi_{j+1})$ are adjacencies for $j=|x| + 1, \ldots, |b|$, and $(\pi_{|x|}, \pi_{|x|+1})$, $(\pi_{|b|}, \pi_{|b|+1})$ are not adjacencies, we call b a \textbf{block}. If $\pi_{j}$ is not in a block, it is said to be \textbf{free}. The algorithm presented here will create $n - 1$ adjacencies of the forms shown in Fig. 2 (a) and Fig. 2 (b)\footnotemark{}, and then transform the permutation into the identity permutation by at most 4 operations. 
+\\[0.1in]
+\begin{minipage}[t]{0.5\textwidth}
+\begin{center}
+\begin{tabular}{ |c |c| } 
+ \hline
+ $k \ldots n$ & $k-1 \ldots 1$ \\ 
+ \hline
+\end{tabular} \\
+\begin{tabular}{ |c |c| } 
+ \hline
+ $n \ldots k$ & $k-1 \ldots 1$ \\ 
+ \hline
+\end{tabular} \\
+\begin{tabular}{ |c |c| } 
+ \hline
+ $1 \ldots k-1$ & $k \ldots n$ \\ 
+ \hline
+\end{tabular} \\
+(a)
+\end{center}
+\end{minipage}%
+\begin{minipage}[t]{0.5\textwidth}
+\begin{center}
+\begin{tabular}{ |c|c| } 
+ \hline
+ $k-1 \ldots 1$ & $k \ldots n$ \\
+ \hline
+\end{tabular}
+\\
+\begin{tabular}{ |c|c| } 
+ \hline
+ $k \ldots n$ & $k-1 \ldots 1$ \\ 
+ \hline
+\end{tabular}
+\\
+proceed like (a) \\
+(b)
+\end{center}
+\end{minipage}
+
+\begin{center}
+    Fig. 2
+\end{center}
+
+\footnotetext{addition is understood modulo n here and therefore $1$ and $n$ are considered adjacent}
+
+\subsection{The Algorithm}
+\textbf{algorithm $\phi$} \\ 
+\textbf{input} a permutation $\pi$ \\  
+\textbf{output} a permutation $\sigma$ with $n-1$ adjacencies\\ 
+set $\sigma=\pi$ and repeat the following steps until the algorithm halts \\ 
+let $t$ be the first element of $\sigma$, at least one of the following cases hold
+\begin{enumerate}
+\item if $t$ is free, and $t+o$\footnote{$o \in \{1, -1\} $} is free, apply the flipping shown in Fig. 3 (a)
+\item if $t$ is free, and $t+o$ is the first element of a block, flip according to Fig. 3 (b)
+\item if $t$ is free, and both $t+1$ and $t-1$ are the last element of a block, use Fig. 3 (c) flips
+\item if $t$ is in a block, and $t+o$ is free, perform the sequence of flips shown in Fig 3. (d)
+\item if $t$ is in a block, and $t+o$ is the first element of a block, perform the sequence of flips shown in Fig 3. (e) 
+\item if $t$ is in a block with the last element $t + k.o, k>0$. $t-o$ is the last element of another block. If $t+(k+1).o$ is free, perform according to Fig. 3 (f) or Fig. 3 (g) based on the relative position of $t+(k+1)o$ and $t-o$ 
+\item if $t$ is in a block with the last element $t + k.o, k>0$, and $t+(k+1).o$ is in another block, perform according to Fig. 3 (h) or Fig. 3 (k), depending on whether $t+(k+1).o$ is in the beginning or the end of its block 
+\item none of the above, $\sigma$ has $n-1$ adjacencies, return $\sigma$ 
+\end{enumerate} 
+
+\begin{minipage}[t]{0.5\textwidth}
+\begin{center}
+% case 1 
+\begin{tabular}{ |c|c|c|c|c } 
+ \hline
+ $t$ & \hspace*{1cm}  & $t + o$ & \hspace*{2cm} \\ 
+ \hline
+\end{tabular} 
+\\
+\begin{tabular}{ |c|c|c|c|c }
+ \hline 
+ \hspace*{1cm} & $t$ & $t + o$ & \hspace*{2cm} \\ 
+ \hline
+\end{tabular}
+\\
+(a)
+\\[0.1in]
+%case 3 
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ $t$ & \hspace*{0.5cm}  & $\ldots t - o$ & \hspace*{0.5cm} & $\ldots t + o$ & \hspace{0.5cm} \\ 
+ \hline
+\end{tabular} 
+\\
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ $t-o \ldots$ & \hspace*{0.5cm}  & $t$ & \hspace*{0.5cm} & $\ldots t + o$ & \hspace{0.5cm} \\ 
+ \hline
+\end{tabular} \\
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ \hspace*{0.5cm}  & $\ldots t - o$ & $t$ & \hspace*{0.5cm} & $\ldots t + o$ & \hspace{0.5cm} \\ 
+ \hline
+\end{tabular} \\
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ $t+o \ldots$ & \hspace*{0.5cm}  & $t$ & $t - o\ldots$ & \hspace*{1cm} \\ 
+ \hline
+\end{tabular} \\
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ \hspace*{0.5cm} & $\ldots t+o$  & $t$ & $t - o\ldots$ & \hspace*{1cm} \\ 
+ \hline
+\end{tabular} 
+\\
+(c)
+\\[0.1in]
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ $t \ldots t+k.o$ & \hspace*{0.1cm}  & $t+(k+1).o$ & \hspace*{0.1cm} & $\ldots t - o$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular} \\ 
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ $t+(k+1).o$ & \hspace*{0.1cm}  & $t+k.o \ldots t$ & \hspace*{0.1cm} & $\ldots t - o$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular} \\ 
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ \hspace*{0.1cm}  & $t+(k+1).o$ &  $t+k.o \ldots t$ & \hspace*{0.1cm} & $\ldots t - o$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular} \\ 
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \begin{tblr}{
+    colspec = { |c|c|c|c|c|c|c  },
+    column{5} = {purple7},
+    column{6} = {purple7},
+  }
+ \hline
+ $t - o \ldots$ & \hspace*{0.1cm} & $t \ldots t+k.o$ & $t+(k+1).o$ & \hspace*{0.1cm} & \hspace{0.1cm} \\ 
+ \hline
+\end{tblr}
+\end{tabular} \\ 
+\begin{tabular}{ |c|c|c|c|c|c|c } 
+ \hline
+ \hspace*{0.1cm} & $\ldots t - o $ & $t \ldots t+k.o$ & $t+(k+1).o$ & \hspace*{0.1cm} & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular} \\ 
+(f) 
+\\[0.1in]
+\begin{tabular}{ |c|c|c|c|c|c|c| } 
+ \hline
+ $t\ldots t+k.o$ & \hspace*{0.1cm} & $t+(k+1).o \ldots$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular} \\ 
+\begin{tabular}{ |c|c|c|c|c|c|c| } 
+ \hline
+ $\ldots t+(k+1).o$ & \hspace*{0.1cm} & $t+k.o \ldots t$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular} \\ 
+\begin{tabular}{ |c|c|c|c|c|c|c| } 
+ \hline
+ $t+(k+1).o \ldots$ & \hspace*{0.1cm} & $t+k.o \ldots t$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular} \\
+\begin{tabular}{ |c|c|c|c|c|c|c| } 
+ \hline
+ \hspace*{0.1cm} & $\ldots t+(k+1).o$ & $t+k.o \ldots t$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular} \\
+(h)
+\\
+\end{center}
+\end{minipage}
+\begin{minipage}[t]{0.5\textwidth}
+\begin{center}
+%case 2
+\begin{tabular}{ |c|c|c|c|c } 
+ \hline
+ $t$ & \hspace*{1cm}  & $t + o \dots$ & \hspace*{2cm} \\ 
+ \hline 
+\end{tabular} 
+\begin{tabular}{ |c|c|c|c|c }
+ \hline 
+ \hspace*{1cm} & $t$ & $t + o \dots$ & \hspace*{2cm} \\ 
+ \hline
+\end{tabular}
+\\
+(b) 
+\\[0.1in]
+%case 4 
+\begin{tabular}{ |c|c|c|c|c| } 
+ \hline
+ $t \dots$ & \hspace*{1cm}  & $t + o$ & \hspace*{2cm} \\ 
+ \hline 
+\end{tabular} 
+
+\begin{tabular}{ |c|c|c|c|c| }
+ \hline 
+ \hspace*{1cm} & $\ldots t$ & $t + o$ & \hspace*{2cm} \\ 
+ \hline
+\end{tabular}
+\\
+(d)
+\\[0.1in]
+%case 5 
+\begin{tabular}{ |c|c|c|c|c| }
+ \hline 
+ $t \dots$ & \hspace*{1cm} & $t + o \ldots$ & \hspace*{2cm} \\ 
+ \hline
+\end{tabular}
+\\ 
+\begin{tabular}{ |c|c|c|c|c| }
+ \hline 
+ \hspace*{1cm} & $\dots t$ & $t + o \ldots$ & \hspace*{2cm} \\ 
+ \hline
+\end{tabular}
+\\
+(e)
+\\[0.1in]
+\begin{tabular}{ |c|c|c|c|c|c| }
+ \hline 
+ $t \ldots t+k.o$ & \hspace*{0.1cm} & $\ldots t - o$ & \hspace*{0.1cm} & $t+(k+1).o$  & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular}\\
+\begin{tabular}{ |c|c|c|c|c|c| }
+ \hline 
+ $t+(k+1).o$ & \hspace*{0.1cm} & $t - o \ldots$ & \hspace*{0.1cm} & $t+k.o \ldots t$  & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular}\\
+\begin{tabular}{ |c|c|c|c|c|c| }
+ \hline 
+ \hspace*{0.1cm} & $\ldots t - o$ & \hspace*{0.1cm} & $t+(k+1).o$  & $t+k.o \ldots t$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular}\\
+\begin{tabular}{ |c|c|c|c|c|c| }
+ \hline 
+ $t \ldots t+k.o$ & $t+(k+1).o$ & \hspace*{0.1cm} & $t - o \ldots$ & \hspace*{0.1cm} & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular}\\
+\begin{tabular}{ |c|c|c|c|c|c| }
+ \hline 
+ \hspace*{0.1cm} & $t+(k+1).o$ & $t+k.o \ldots t$ & $t - o \ldots$ & \hspace*{0.1cm} & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular}
+\\
+(g)
+\\[0.1in]
+%case 7
+\begin{tabular}{ |c|c|c|c| }
+ \hline 
+ $t\ldots t+k.o$ & \hspace*{0.1cm} & $\ldots t+(k+1).o$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular}\\
+\begin{tabular}{ |c|c|c|c| }
+ \hline 
+ $t+(k+1).o \ldots$ & \hspace*{0.1cm} & $t+k.o \ldots t$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular}\\
+\begin{tabular}{ |c|c|c|c| }
+ \hline 
+ \hspace*{0.1cm} & $\ldots t+(k+1).o$ & $t+k.o \ldots t$ & \hspace{0.1cm} \\ 
+ \hline
+\end{tabular}\\
+(k) 
+\\[0.1in] 
+\end{center} 
+\end{minipage}%
+\\
+\begin{center}
+Fig. 3 
+\end{center}
+
+The first three conditions correspond to the case where $t$ is free. If $t$ is free, $t+o$ could be either free or in a block. The situation where $t+o$ is not in a block is covered in the first case. If $t+o$ is in a block, it's either the first or the last element of a block. If it's the first element of a block, then second case is applied. If it's not the first element of a block, we can be sure that both $t+1$ and $t-1$ are the last elements of their blocks, which corresponds to case 3. When $t$ is in a block cases 4-7 are applied.\\
+
+\textbf{Claim} Algorithm $\phi$ creates a permutation with $n-1$ adjacencies in at most $\frac{5n - 7}{3}$ steps 
+\\
+\textbf{Proof}
+To see why the algorithms halts and returns a permutation with $n-1$ adjacencies, note that at each step at least 1 adjacency is added without destroying the existing ones. Moreover, at each step one of the cases 1-7 applies. Thus, it remain to show that the algorithm runs in at most $\frac{5n-7}{3}(n+1)$ steps. \\ 
+Call the action of case 1 action 1, case 2 action 2, case 3 and 6 action 3, case 4 action 4, case 5 and case 7, action 5 and action 7 respectively. We denote $x_{i}$ as the number of times action $i$ was performed in the execution of the algorithm. The total number of moves in the algorithm is given by 
+\begin{equation}\label{eq:objective}
+    z = x_1 + x_2 + 4x_3 + x_4 + x_5 + 2x_7  
+\end{equation}
+Where $x_i$ is multiplied by the number of flips involved in the execution of action $i$. Action 3 can be divided into four special subcases, according to what happens in the flipping of Fig. 3(c) (or 3(f), 3(g)) in the step that comes before the last step\footnote{we have colored the two squares in Fig. 3 for which the following cases can happen}: 
+\begin{enumerate}
+\item be non-adjacent 
+\item form a new block 
+\item merge a block with a singleton 
+\item merge to blocks
+\end{enumerate} 
+We distinguish between these cases by writing $x_3 = x_{31} + x_{32} + x_{33} + x_{34}$. We start with $a$ adjacencies and increase the number of adjacencies according to Table. 2, and eventually end up with $n-1$ adjacencies. Additionally, we begin with $b$ blocks and end up with only 1 after the permutation is sorted. Therefore, we can write: 
+\begin{align} 
+n - 1 &= a + x_1 + x_2 + 2x_{31} + 3x_{32} + 3x_{33} + 3x_{34} + x_4 + x_5 + x_7 \\
+1 &= b + x_1 - x_{31} - x_{33} - 2x_{34} - x_{5} - x_7 
+\end{align} 
+
+\begin{center}
+\begin{tabular}{ |c c c c c c c c c c| } 
+ \hline
+ $action$ & 1 & 2 & 31 & 32 & 33 & 34 & 4 & 5 & 7 \\
+ \hline
+ increase in adjacencies & 1 & 1 & 2 & 3 & 3 & 3 & 1 & 1 & 1 \\
+ \hline
+ decrease in blocks      & -1 & 0 & 1 & 0 & 1 & 2 & 0 & 1 & 1 \\
+ \hline
+\end{tabular}\\
+Table. 2 
+\end{center}
+Since each block consists of at least one adjacent pair, we can say that $b \leq a$. Therefore, equation (2) becomes: 
+\begin{equation}
+b + x_1 + x_2 + 2x_{31} + 3x_{32} + 3x_{33} + 3x_{34} + x_4 + x_5 + x_7 \leq n - 1
+\end{equation}
+Hence, if we apply the algorithm in any way\footnotemark{}, we would, at worst, maximize equation \eqref{eq:objective} subject to constraints (3), (4).
+This is an integer linear programming problem. By the weak duality theorem, we know that every solution to the dual problem is an upper bound on the original problem. Therefore, we consider the dual problem instead. Hence, we will need to minimize $ w = y_2 + (n-1)y_3 $, subject to the following equations: 
+\begin{align}
+y_2 + y3 &\geq 1, \\ 
+y_3 &\geq 1,\\ 
+-y_2 + 2y_3 &\geq 4, \\
+3y_3 &\geq 4, \\ 
+-y_2 + 3y_3 &\geq 4, \\ 
+-2y_2 + 3y_3 &\geq 4, \\ 
+-y_2 + y_3 &\geq 1, \\ 
+-y_2 + y_3 &\geq 2, \\
+y_2 + y_3 &\geq 0 
+\end{align} 
+Therefore, in order to prove our claim, we only need to find a pair $(y_2, y_3)$ such that $y_2 + (n-1)y_3 = \frac{5n-7}{3} $ and $(y_2, y_3)$ is a feasible solution to the stated minimization problem. Putting $(y_2, y_3)=(\frac{-2}{3},\frac{5}{3})$ satisfies all the conditions. Since there will be at most 4 steps after we run our algorithm, the bound $f(n) \leq \frac{5n-7}{3} + 4 = \frac{5n+5}{3}$ follows immediately. 
+
+\footnotetext{by any ordering we mean any way of applying the cases 1-7}
